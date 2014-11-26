@@ -10,7 +10,7 @@ LANG=zh_CN.UTF-8
 export LANG
 
 WEB=/home/zenxds/trunk
-SVN update $WEB --username zenxds --password 12345678
+$SVN update $WEB --username zenxds --password 12345678
 
 HANDLER=/home/zenxds/repository/f2e-publish/hooks/svnHandler.js
 ${NODE} ${HANDLER} ${REPOS} ${REV}
