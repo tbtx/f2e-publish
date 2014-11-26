@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
+var exec = require('child_process').exec;
 var args = process.argv.splice(2);
 
 var updateInfo = 'a.txt';
@@ -17,7 +18,9 @@ try {
     json = require(jsonPath);
 } catch(e) {}
 
-fs.readFile(updateInfo, 'utf-8', function(err, data) {
+exec(cmd, {
+
+}, function(err, data) {
     if (err) {
         console.error(err);
     } else {
