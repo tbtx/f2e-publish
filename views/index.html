@@ -10,7 +10,22 @@
         {% include "partials/sidebar.html" %}
 
         <div class="col-md-8">
+            <table class="table table-hover">
+                <tr>
+                    <th><a href="javascript:void(0);" id="js-select-all" class="btn">全选</a></th>
+                    <th>文件名</th>
+                    <th><a href="javascript:void(0);" id="js-compress-all" class="btn">压缩</a></th>
+                </tr>
+                {% for key, item in updates %}
+                <tr class="js-publish-item" data-name="{{ key }}">
+                    <td data-role="select"><input type="checkbox" data-role="select-checkbox" data-t="select"></td>
+                    <td>{{ key }}</td>
+                    <td data-role="compress"><input type="checkbox" data-role="compress-checkbox" data-t="compress"></td>
+                </tr>
+                {% endfor %}
+            </table>
 
+            <a class="btn btn-success" id="js-submit" href="javascript:void(0);">提交</a>
         </div>
     </div>
 </div>

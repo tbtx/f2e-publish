@@ -32,7 +32,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html', swig.renderFile);
-app.set('staticDir', path.join(__dirname, 'dist'));
 
 
 // uncomment after placing your favicon in /public
@@ -42,7 +41,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/dist', express.static(app.get('staticDir')));
+app.use('/dist', express.static(path.join(__dirname, 'dist')));
+app.use('/json', express.static(path.join(__dirname, 'json')));
+app.use('/backup', express.static(path.join(__dirname, 'backup')));
 
 app.use('/', routes);
 
