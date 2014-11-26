@@ -1,13 +1,10 @@
 #!/bin/sh
 SVN=/usr/bin/svn
 PYTHON=/usr/bin/python
-NODE=/user/bin/node
+NODE=/usr/bin/node
 
 REPOS="$1"
 REV="$2"
-
-LANG=zh_CN.UTF-8
-export LANG
 
 WEB=/home/zenxds/trunk
 $SVN update $WEB --username zenxds --password 12345678
