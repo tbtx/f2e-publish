@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include "partials/sidebar.html" %}
+
+        <div class="col-md-8">
+            {% if status == "404" %}
+                <p>很抱歉，没有找到该页面！</p>
+            {% endif %}
+            {% if status == "500" %}
+                <p>很抱歉，服务器出错了！</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

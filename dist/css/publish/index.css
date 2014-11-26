@@ -1,0 +1,20 @@
+html,
+body {
+    height: 100%
+}
+
+body {
+    font-family: Helvetica,tahoma,arial,"Hiragino Sans GB",\5fae\8f6f\96c5\9ed1,\5b8b\4f53,sans-serif;
+}
+.skin-text {
+    font-family: \5b8b\4f53,serif;
+}
+
+#page {
+    padding-bottom: 63px;
+    height: 100%;
+}
+
+#footer {
+    margin-top: -63px;
+}

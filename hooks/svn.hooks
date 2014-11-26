@@ -1,0 +1,16 @@
+#!/bin/sh
+SVN=/usr/bin/svn
+PYTHON=/usr/bin/python
+NODE=/user/bin/node
+
+REPOS="$1"
+REV="$2"
+
+LANG=zh_CN.UTF-8
+export LANG
+
+WEB=/home/web/tbcdn/apps/tbtx
+SVN update $WEB --username shiyi --password 12345678
+
+COMPRESSOR=/home/svn/qianduan/hooks/compressor.py
+${PYTHON_BIN} ${COMPRESSOR} ${REPOS} ${REV}
