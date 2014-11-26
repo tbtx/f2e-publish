@@ -4,15 +4,12 @@ var util = require('util');
 var exec = require('child_process').exec;
 var args = process.argv.splice(2);
 
-var updateInfo = 'a.txt';
-
 var jsonPath = path.join(__dirname, '../json/update.json');
 var json = {};
 
 // 读取更新信息
-var cmd = util.format('svnlook changed -r %s %s', 5, "10");
-
-console.log(cmd);
+// 第一个参数为目录
+var cmd = util.format('svnlook changed -r %s %s', args[1], args[0]);
 
 try {
     json = require(jsonPath);

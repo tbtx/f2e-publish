@@ -9,8 +9,8 @@ REV="$2"
 LANG=zh_CN.UTF-8
 export LANG
 
-WEB=/home/web/tbcdn/apps/tbtx
-SVN update $WEB --username shiyi --password 12345678
+WEB=/home/zenxds/trunk
+SVN update $WEB --username zenxds --password 12345678
 
-COMPRESSOR=/home/svn/qianduan/hooks/compressor.py
-${PYTHON_BIN} ${COMPRESSOR} ${REPOS} ${REV}
+HANDLER=/home/zenxds/repository/f2e-publish/hooks/svnHandler.js
+${NODE} ${HANDLER} ${REPOS} ${REV}
