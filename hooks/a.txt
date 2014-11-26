@@ -1,2 +1,0 @@
-U   miiee/js/banner-switcher.js
-D   miiee/js/banner-switcher2.js
