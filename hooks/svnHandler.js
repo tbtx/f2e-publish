@@ -6,7 +6,7 @@ var args = process.argv.splice(2);
 
 var when = require('when');
 
-var jsonPath = path.join(__dirname, '../json/update.json');
+var jsonPath = path.join(__dirname, '../update.json');
 var json = {};
 var settings = {};
 
