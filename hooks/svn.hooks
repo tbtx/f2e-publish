@@ -1,13 +1,8 @@
 #!/bin/sh
-SVN=/usr/bin/svn
-PYTHON=/usr/bin/python
 NODE=/usr/bin/node
 
 REPOS="$1"
 REV="$2"
-
-WEB=/home/zenxds/trunk
-$SVN update $WEB --username zenxds --password 12345678
 
 HANDLER=/home/zenxds/repository/f2e-publish/hooks/svnHandler.js
 ${NODE} ${HANDLER} ${REPOS} ${REV}
