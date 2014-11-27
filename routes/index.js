@@ -17,17 +17,17 @@ try {
 
 // backup, tmp
 
-fse.ensureDir(normalizePath('../tmp'));
+fse.ensureDirSync(normalizePath('../tmp'));
 
 
 // json备份
-fse.ensureDir(normalizePath('../backup/json'));
+fse.ensureDirSync(normalizePath('../backup/json'));
 
 // 提交包备份
-fse.ensureDir(normalizePath('../backup/commit'));
+fse.ensureDirSync(normalizePath('../backup/commit'));
 
 // 发布包备份
-fse.ensureDir(normalizePath('../backup/package'));
+fse.ensureDirSync(normalizePath('../backup/package'));
 
 
 // function rmdir(dirpath) {
@@ -53,15 +53,26 @@ router.get('/', function(req, res) {
 
 router.post('/commit', function(req, res) {
     var code = 100,
-        msg = 'success';
+        msg = 'success',
+        data = JSON.parse(req.param('data')) || [];
 
-    var data = JSON.parse(req.param('data')) || [];
-    var stamp = formatDate("Ymdhis");
+    var stamp = formatDate("Ymdhis"),
+        // 保存源文件
+        srcPath = normalizePath('../tmp/src' + stamp +  '/tbtx/'),
+        // 保存压缩文件
+        distPath = normalizePath('../tmp/dist' + stamp + '/tbtx');
+
+    fse.ensureDirSync(srcPath);
+    fse.ensureDirSync(distPath);
 
     data.forEach(function(item) {
         var name = item.name || '',
             compressed = item.compressed,
             ext = path.extname(name);
+
+        var filePath = path.join(settings.project, name);
+
+        fse.copySync(filePath, path.join(srcPath, name));
 
         // 需要压缩
         if (compressed) {
