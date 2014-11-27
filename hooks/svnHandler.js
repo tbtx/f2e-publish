@@ -31,6 +31,8 @@ function svnUpdate() {
             deferred.resolve(data);
         }
     });
+
+    return deferred.promise;
 }
 
 function getUpdateInfo() {
@@ -45,6 +47,8 @@ function getUpdateInfo() {
             deferred.resolve(data);
         }
     });
+
+    return deferred.promise;
 }
 
 function updateJSON(data) {
