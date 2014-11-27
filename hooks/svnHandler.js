@@ -4,7 +4,7 @@ var util = require('util');
 var exec = require('child_process').exec;
 var args = process.argv.splice(2);
 
-var when = require('when');
+var q = require('q');
 
 var jsonPath = path.join(__dirname, '../update.json');
 var json = {};
@@ -19,8 +19,11 @@ try {
 } catch(e) {}
 
 
+/**
+ * 更新svn
+ */
 function svnUpdate() {
-    var deferred = when.defer();
+    var deferred = q.defer();
     var cmd = util.format("svn update %s --username %s --password %s", settings.project, settings.user, settings.password);
 
     exec(cmd, function(err, data) {
@@ -35,8 +38,11 @@ function svnUpdate() {
     return deferred.promise;
 }
 
+/**
+ * 通过svnlook获取更新详细记录
+ */
 function getUpdateInfo() {
-    var deferred = when.defer();
+    var deferred = q.defer();
     var cmd = util.format('svnlook changed -r %s %s', args[1], args[0]);
 
     exec(cmd, function(err, data) {
@@ -51,6 +57,9 @@ function getUpdateInfo() {
     return deferred.promise;
 }
 
+/**
+ * 生产json文件
+ */
 function updateJSON(data) {
     var lines = data.split('\n');
 
