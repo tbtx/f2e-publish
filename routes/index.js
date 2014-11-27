@@ -1,47 +1,40 @@
 var util = require('util');
 var path = require('path');
-var fs = require('fs');
 var exec = require('child_process').exec;
 
 var express = require('express');
 var router = express.Router();
 
+var fse = require('fs-extra');
 
 var settings = {};
 
 try {
-    settings = require(path.join(__dirname, '../settings'));
+    settings = require(normalizePath('../settings'));
 } catch (e) {}
 
 
 
 // backup, tmp
 
-mkdir('../tmp');
+fse.ensureDir(normalizePath('../tmp'));
 
-mkdir('../backup/');
 
 // json备份
-mkdir('../backup/json');
+fse.ensureDir(normalizePath('../backup/json'));
 
 // 提交包备份
-mkdir('../backup/commit');
+fse.ensureDir(normalizePath('../backup/commit'));
 
 // 发布包备份
-mkdir('../backup/package');
+fse.ensureDir(normalizePath('../backup/package'));
 
 
-function mkdir(dirpath) {
-    try {
-        fs.mkdirSync(path.join(__dirname, dirpath));
-    } catch (e) {}
-}
-
-function rmdir(dirpath) {
-    try {
-        fs.rmdirSync(path.join(__dirname, dirpath));
-    } catch (e) {}
-}
+// function rmdir(dirpath) {
+//     try {
+//         fse.rmdirSync(path.join(__dirname, dirpath));
+//     } catch (e) {}
+// }
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -49,7 +42,7 @@ router.get('/', function(req, res) {
     var updates = {};
 
     try {
-        updates = require('../update.json');
+        updates = require(normalizePath('../update.json'));
     } catch (e) {}
 
     res.render('index', {
@@ -86,6 +79,10 @@ router.post('/commit', function(req, res) {
         msg: msg
     });
 });
+
+function normalizePath(relative) {
+    return path.join(__dirname, relative);
+}
 
 function formatDate(format) {
     format = format || "Y-m-d h:i:s";
