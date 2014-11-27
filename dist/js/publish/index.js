@@ -91,7 +91,14 @@ require(["jquery", "widget"], function($, Widget) {
             var $btn = $(e.target);
             $btn.hide();
 
-            $.ajax("/commit", data).done(function(response) {
+            $.ajax({
+                url: "/commit",
+                data: {
+                    data: JSON.stringify(data)
+                },
+                type: "post",
+                dataType: "json"
+            }).done(function(response) {
                 var code = response.code;
                 if (code === 100) {
 
@@ -100,7 +107,7 @@ require(["jquery", "widget"], function($, Widget) {
                 }
             }).always(function() {
                 $btn.show();
-            })
+            });
         }
     });
 

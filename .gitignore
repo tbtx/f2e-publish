@@ -1,4 +1,7 @@
 node_modules
+npm-debug.log
+
 backup
 tmp
 settings.js
+update.json

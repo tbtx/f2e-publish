@@ -11,7 +11,7 @@ var json = {};
 var settings = {};
 
 try {
-    settings = require('../settings');
+    settings = require(path.join(__dirname, '../settings'));
 } catch (e) {}
 
 try {
