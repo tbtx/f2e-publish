@@ -36,7 +36,7 @@ router.get('/', function(req, res) {
     var updates = {};
 
     try {
-        updates = require(normalizePath('../update.json'));
+        updates = fse.readJSONSync(normalizePath('../update.json'));
     } catch (e) {}
 
     res.render('index', {
