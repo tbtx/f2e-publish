@@ -223,6 +223,7 @@ router.post('/commit', function(req, res) {
 function tar(name, dir) {
     var deferred = q.defer();
     var cmd = util.format("tar -zcvf %s.tar.gz %s", dir);
+    console.log(command);
 
     exec(cmd, function(err, data) {
         if (err) {
