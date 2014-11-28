@@ -5,6 +5,8 @@ var exec = require('child_process').exec;
 var express = require('express');
 var router = express.Router();
 
+var uglify = require('uglify-js');
+var clean = require('clean-css');
 var fse = require('fs-extra');
 
 var settings = {};
@@ -70,15 +72,32 @@ router.post('/commit', function(req, res) {
             compressed = item.compressed,
             ext = path.extname(name);
 
-        var filePath = path.join(settings.project, name);
+        var filePath = path.join(settings.project, name),
+            distContent = '';
 
         fse.copySync(filePath, path.join(srcPath, name));
 
         // 需要压缩
         if (compressed) {
             if (ext === '.css') {
-
+                clean();
             } else if(ext === '.js') {
+                distContent = uglify.minify(filePath, {
+                    mangle: true,
+                    compress: {
+                        booleans: true,         // 多种针对布尔上下文的优化
+                        conditionals: true,     // 为if -s 和条件表达式应用优化
+                        dead_code: true,       // 移除不可达的代码
+                        drop_console: true,      // 删除console代码
+                        drop_debugger: true,       // 删除debugger语句
+                        if_return: true,        // 这对 if/return 和 if/continue 的优化
+                        join_vars: true,        // 加入连续的var语句
+                        properties: true,       // 使用obj.x 代替 obj[x]
+                        sequences: true,        // 使用逗号操作符加入连续的简单语句
+                        unused: true            // 去掉没有被引用过的函数和变量
+                    }
+                });
+            } else {
 
             }
         }
