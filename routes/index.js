@@ -148,7 +148,7 @@ router.post('/commit', function(req, res) {
                             sequences: true,        // 使用逗号操作符加入连续的简单语句
                             unused: true            // 去掉没有被引用过的函数和变量
                         }
-                    });
+                    }).code;
 
                     fse.outputFileSync(path.join(distPath, name), distContent);
                 } catch (e) {
