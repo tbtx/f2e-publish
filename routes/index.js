@@ -9,25 +9,31 @@ var router = express.Router();
 var uglify = require('uglify-js');
 var Clean = require('clean-css');
 var fse = require('fs-extra');
+var q = require('q');
 
 var settings = {};
-
 try {
     settings = require(normalizePath('../settings'));
 } catch (e) {}
 
 
+var backupDirs = {
+    json: normalizePath('../backup/json'),
+    src: normalizePath('../backup/src'),
+    dist: normalizePath('../backup/dist')
+}
+
 // temp dir
 fse.ensureDirSync(normalizePath('../tmp'));
 
 // json备份
-fse.ensureDirSync(normalizePath('../backup/json'));
+fse.ensureDirSync(backupDirs.json);
 
 // 提交包备份
-fse.ensureDirSync(normalizePath('../backup/src'));
+fse.ensureDirSync(backupDirs.src);
 
 // 发布包备份
-fse.ensureDirSync(normalizePath('../backup/dist'));
+fse.ensureDirSync(backupDirs.dist);
 
 
 /* GET home page. */
@@ -36,6 +42,7 @@ router.get('/', function(req, res) {
     var updates = {};
 
     try {
+        // 用require会有缓存
         updates = fse.readJSONSync(normalizePath('../update.json'));
     } catch (e) {}
 
@@ -54,11 +61,15 @@ router.post('/commit', function(req, res) {
     var code = 100,
         msg = 'success',
         data = JSON.parse(req.param('data')) || [],
+        jsonPath = normalizePath('../update.json'),
+        updates = fse.readJSONSync(jsonPath),
         result = {};
 
-    var stamp = formatDate("Ymdhis"),
+    var stamp = formatDate('Ymdhis'),
+        // 在压缩后的头部加上时间注释
+        header = util.format('/* %s */', stamp);
         // 保存源文件
-        srcPath = normalizePath('../tmp/src' + stamp +  '/tbtx/'),
+        srcPath = normalizePath('../tmp/src' + stamp +  '/tbtx'),
         // 保存压缩文件
         distPath = normalizePath('../tmp/dist' + stamp + '/tbtx');
 
@@ -72,7 +83,7 @@ router.post('/commit', function(req, res) {
     };
 
     var ret = function() {
-        // clearDir();
+        clearDir();
 
         res.send({
             code: code,
@@ -91,8 +102,6 @@ router.post('/commit', function(req, res) {
             srcContent = '',        // 源文件内容，css压缩时使用
             distContent = '';
 
-        console.log("filePath:" + filePath);
-        console.log("ext:" + ext);
         try {
             fse.copySync(filePath, path.join(srcPath, name));
         } catch(e) {
@@ -120,7 +129,7 @@ router.post('/commit', function(req, res) {
 
                     }).minify(srcContent);
 
-                    fse.outputFileSync(path.join(distPath, name), distContent);
+                    fse.outputFileSync(path.join(distPath, name), header + distContent);
                 } catch(e) {
 
                     code = 221;
@@ -150,7 +159,7 @@ router.post('/commit', function(req, res) {
                         }
                     }).code;
 
-                    fse.outputFileSync(path.join(distPath, name), distContent);
+                    fse.outputFileSync(path.join(distPath, name), header + distContent);
                 } catch (e) {
                     code = 231;
                     msg = "compress js file error";
@@ -186,11 +195,45 @@ router.post('/commit', function(req, res) {
                 return false;
             }
         }
+
+        delete updates[name];
         return true;
     });
 
-    ret();
+    q.all([
+        tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath),
+        tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath)
+    ]).done(function() {
+        // 备份json
+        fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
+        fse.outputJSONSync(jsonPath, updates);
+
+        result.packagePath = path.join(backupDirs.dist, "tbtx_" + stamp + ".tar.gz");
+        ret();
+    }).fail(function() {
+        code = 251;
+        msg = "tar error";
+
+        ret();
+    });
+
 });
+
+
+function tar(name, dir) {
+    var deferred = q.defer();
+    var cmd = util.format("tar -zcvf %s.tar.gz %s", dir);
+
+    exec(cmd, function(err, data) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            deferred.resolve(data);
+        }
+    });
+
+    return deferred.promise;
+}
 
 function normalizePath(relative) {
     return path.join(__dirname, relative);
