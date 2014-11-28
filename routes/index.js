@@ -186,9 +186,10 @@ router.post('/commit', function(req, res) {
                 return false;
             }
         }
-
-        ret();
+        return true;
     });
+
+    ret();
 });
 
 function normalizePath(relative) {
