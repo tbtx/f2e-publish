@@ -72,7 +72,7 @@ router.post('/commit', function(req, res) {
     };
 
     var ret = function() {
-        clearDir();
+        // clearDir();
 
         res.send({
             code: code,
@@ -91,6 +91,8 @@ router.post('/commit', function(req, res) {
             srcContent = '',        // 源文件内容，css压缩时使用
             distContent = '';
 
+        console.log("filePath:" + filePath);
+        console.log("ext:" + ext);
         try {
             fse.copySync(filePath, path.join(srcPath, name));
         } catch(e) {
