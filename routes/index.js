@@ -53,11 +53,7 @@ router.get('/', function(req, res) {
 
 });
 
-/*
- * code
- * 创建目录会失败？ 201 - 210预留
- * 211 拷贝源文件到tmp目录失败
- */
+
 router.post('/commit', function(req, res) {
     var code = 100,
         msg = 'success',
