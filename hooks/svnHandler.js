@@ -73,7 +73,9 @@ function updateJSON(data) {
             if (mark == "d") {
                 delete json[key];
             } else {
-                json[key] = 1;
+                if (/\.(css|js)$/.test(key)) {
+                    json[key] = 1;
+                }
             }
         }
     });
