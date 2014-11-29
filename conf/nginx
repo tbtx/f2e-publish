@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name publish.tbtx.cdn;
     location ^~ /backup/ {
-        root /xxx/repository/f2e-publish;
+        root /repository/f2e-publish;
         autoindex on;
         autoindex_localtime on;
     }

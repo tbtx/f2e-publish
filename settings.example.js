@@ -1,6 +1,6 @@
 module.exports = {
     // svn所在地址
-    project: "/home/zenxds/trunk",
+    project: "/trunk",
     // svn账号密码
     user: "",
     password: ""

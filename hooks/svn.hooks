@@ -4,5 +4,5 @@ NODE=/usr/bin/node
 REPOS="$1"
 REV="$2"
 
-HANDLER=/home/zenxds/repository/f2e-publish/hooks/svnHandler.js
+HANDLER=/repository/f2e-publish/hooks/svnHandler.js
 ${NODE} ${HANDLER} ${REPOS} ${REV}
