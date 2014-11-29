@@ -10,6 +10,7 @@ var uglify = require('uglify-js');
 var Clean = require('clean-css');
 var fse = require('fs-extra');
 var q = require('q');
+var moment = require('moment');
 
 var settings = {};
 try {
@@ -72,7 +73,7 @@ router.post('/commit', function(req, res) {
     } catch(e) {}
 
 
-    var stamp = formatDate('Ymdhis'),
+    var stamp = moment().format("YYYYDDMMHHmmss"),
         // 在压缩后的头部加上时间注释
         header = util.format('/* %s */\n', stamp);
         // 保存源文件
@@ -83,14 +84,10 @@ router.post('/commit', function(req, res) {
     fse.ensureDirSync(srcPath);
     fse.ensureDirSync(distPath);
 
-    // 删除上面创建的临时目录
-    var clearDir = function() {
+    var ret = function() {
+        // 删除上面创建的临时目录
         fse.removeSync(srcPath);
         fse.removeSync(distPath);
-    };
-
-    var ret = function() {
-        clearDir();
 
         res.send({
             code: code,
@@ -247,33 +244,6 @@ function tar(name, dir) {
 
 function normalizePath(relative) {
     return path.join(__dirname, relative);
-}
-
-function formatDate(format) {
-    format = format || "Y-m-d h:i:s";
-
-    var date = new Date();
-    var normalized = {
-        Y: date.getFullYear(),
-        M: date.getMonth() + 1,
-        D: date.getDate(),
-        H: date.getHours(),
-        I: date.getMinutes(),
-        S: date.getSeconds()
-    };
-
-    for (var i in normalized) {
-        normalized[i.toLowerCase()] = padding2(normalized[i]).slice(-2);
-    }
-
-    return format.replace(/y|m|d|h|i|s/gi, function(k) {
-        return normalized[k];
-    });
-}
-
-function padding2(str) {
-    str += "";
-    return str.length === 1 ? "0" + str : str;
 }
 
 module.exports = router;
