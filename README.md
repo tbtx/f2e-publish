@@ -7,6 +7,6 @@ tbtx f2e publish service
 
     npm install
 
-    在根目录下创建backup和tmp两个目录
+    仿照settings.example.js创建配置settings.js里的svn地址，用户名和密码
 
-    仿照settings.example.js配置settings.js里的svn地址，用户名和密码
+    修改hooks/svn.hooks里的handler路径， 软链接或者拷贝到svn项目的hooks/post-commit
