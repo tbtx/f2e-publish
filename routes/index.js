@@ -206,9 +206,9 @@ router.post('/commit', function(req, res) {
         ret();
     } else {
         q.all([
-            tar("tbtx_" + stamp, srcPath),
-            tar("tbtx_" + stamp, distPath)
-        ]).done(function() {
+            tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath),
+            tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath)
+        ]).then(function() {
             // 备份json
             fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
             // 更新json
@@ -216,7 +216,7 @@ router.post('/commit', function(req, res) {
 
             result.packagePath = path.join("backup/dist/", "tbtx_" + stamp + ".tar.gz");
             ret();
-        }).fail(function() {
+        }, function() {
             code = 251;
             msg = "tar error";
 
@@ -229,10 +229,11 @@ router.post('/commit', function(req, res) {
 
 function tar(name, dir) {
     var deferred = q.defer();
-    var cmd = util.format("tar -zcvf %s.tar.gz %s", name, dir);
+    var cmd = util.format("tar -zcvf %s.tar.gz %s", name, 'tbtx');
 
+    // dir /xx/xx/f2e-publish/tmp/src20141129030256/tbtx
     exec(cmd, {
-        cwd: /dist_\d+/.test(dir) ? backupDirs.dist : backupDirs.src
+        cwd: path.join(dir, "..")
     }, function(err, data) {
         if (err) {
             deferred.reject(err);
