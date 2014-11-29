@@ -99,10 +99,12 @@ require(["jquery", "widget"], function($, Widget) {
                 type: "post",
                 dataType: "json"
             }).done(function(response) {
-                var code = response.code;
+                var code = response.code,
+                    result = response.result;
                 if (code === 100) {
-
+                    location.href = result.packagePath;
                 } else {
+                    console.log(response);
                     alert(response.msg);
                 }
             }).always(function() {
