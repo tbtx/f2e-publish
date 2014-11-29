@@ -42,7 +42,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
-app.use('/json', express.static(path.join(__dirname, 'json')));
 app.use('/backup', express.static(path.join(__dirname, 'backup')));
 
 app.use('/', routes);

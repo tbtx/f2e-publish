@@ -61,13 +61,20 @@ router.post('/commit', function(req, res) {
     var code = 100,
         msg = 'success',
         data = JSON.parse(req.param('data')) || [],
-        jsonPath = normalizePath('../update.json'),
-        updates = fse.readJSONSync(jsonPath),
         result = {};
+
+
+    var jsonPath = normalizePath('../update.json'),
+        updates = {};
+
+    try {
+        updates = fse.readJSONSync(jsonPath);
+    } catch(e) {}
+
 
     var stamp = formatDate('Ymdhis'),
         // 在压缩后的头部加上时间注释
-        header = util.format('/* %s */', stamp);
+        header = util.format('/* %s */\n', stamp);
         // 保存源文件
         srcPath = normalizePath('../tmp/src' + stamp +  '/tbtx'),
         // 保存压缩文件
@@ -107,10 +114,9 @@ router.post('/commit', function(req, res) {
         } catch(e) {
 
             code = 211;
-            msg = "copy source file to tmp dir error";
+            msg = "copy commit file to src dir error";
             result.error = e.message;
             result.file = filePath;
-            ret();
 
             return false;
         }
@@ -136,7 +142,6 @@ router.post('/commit', function(req, res) {
                     msg = "compress css file error";
                     result.error = e.message;
                     result.file = filePath;
-                    ret();
 
                     return false;
                 }
@@ -161,11 +166,10 @@ router.post('/commit', function(req, res) {
 
                     fse.outputFileSync(path.join(distPath, name), header + distContent);
                 } catch (e) {
-                    code = 231;
+                    code = 226;
                     msg = "compress js file error";
                     result.error = e.message;
                     result.file = filePath;
-                    ret();
 
                     return false;
                 }
@@ -173,11 +177,10 @@ router.post('/commit', function(req, res) {
                 try {
                     fse.copySync(filePath, path.join(distPath, name));
                 } catch(e) {
-                    code = 241;
+                    code = 231;
                     msg = "copy file to dist dir error";
                     result.error = e.message;
                     result.file = filePath;
-                    ret();
 
                     return false;
                 }
@@ -186,11 +189,10 @@ router.post('/commit', function(req, res) {
             try {
                 fse.copySync(filePath, path.join(distPath, name));
             } catch(e) {
-                code = 241;
+                code = 231;
                 msg = "copy file to dist dir error";
                 result.error = e.message;
                 result.file = filePath;
-                ret();
 
                 return false;
             }
@@ -200,22 +202,27 @@ router.post('/commit', function(req, res) {
         return true;
     });
 
-    q.all([
-        tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath),
-        tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath)
-    ]).done(function() {
-        // 备份json
-        fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
-        fse.outputJSONSync(jsonPath, updates);
-
-        result.packagePath = path.join(backupDirs.dist, "tbtx_" + stamp + ".tar.gz");
+    if (code !== 100) {
         ret();
-    }).fail(function() {
-        code = 251;
-        msg = "tar error";
+    } else {
+        q.all([
+            tar("tbtx_" + stamp, srcPath),
+            tar("tbtx_" + stamp, distPath)
+        ]).done(function() {
+            // 备份json
+            fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
+            // 更新json
+            fse.outputJSONSync(jsonPath, updates);
 
-        ret();
-    });
+            result.packagePath = path.join("backup/dist/", "tbtx_" + stamp + ".tar.gz");
+            ret();
+        }).fail(function() {
+            code = 251;
+            msg = "tar error";
+
+            ret();
+        });
+    }
 
 });
 
@@ -224,7 +231,9 @@ function tar(name, dir) {
     var deferred = q.defer();
     var cmd = util.format("tar -zcvf %s.tar.gz %s", name, dir);
 
-    exec(cmd, function(err, data) {
+    exec(cmd, {
+        cwd: /dist_\d+/.test(dir) ? backupDirs.dist : backupDirs.src
+    }, function(err, data) {
         if (err) {
             deferred.reject(err);
         } else {
