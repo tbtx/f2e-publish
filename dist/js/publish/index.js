@@ -103,12 +103,16 @@ require(["jquery", "widget"], function($, Widget) {
                     result = response.result;
                 if (code === 100) {
                     location.href = result.packagePath;
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
                 } else {
                     console.log(response);
                     alert(response.msg);
                 }
             }).always(function() {
-                $btn.show();
+                // $btn.show();
             });
         }
     });
