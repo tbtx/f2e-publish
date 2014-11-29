@@ -106,7 +106,7 @@ require(["jquery", "widget"], function($, Widget) {
 
                     setTimeout(function() {
                         location.reload();
-                    }, 1000);
+                    }, 200);
                 } else {
                     console.log(response);
                     alert(response.msg);
