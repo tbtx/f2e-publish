@@ -73,7 +73,7 @@ router.post('/commit', function(req, res) {
     } catch(e) {}
 
 
-    var stamp = moment().format("YYYYDDMMHHmmss"),
+    var stamp = moment().format("YYYYMMDDHHmmss"),
         // 在压缩后的头部加上时间注释
         header = util.format('/* %s */\n', stamp);
         // 保存源文件
@@ -86,8 +86,8 @@ router.post('/commit', function(req, res) {
 
     var ret = function() {
         // 删除上面创建的临时目录
-        fse.removeSync(srcPath);
-        fse.removeSync(distPath);
+        fse.removeSync(path.join(srcPath, ".."));
+        fse.removeSync(path.join(distPath, ".."));
 
         res.send({
             code: code,
@@ -211,7 +211,7 @@ router.post('/commit', function(req, res) {
             // 更新json
             fse.outputJSONSync(jsonPath, updates);
 
-            result.packagePath = path.join("backup/dist/", "tbtx_" + stamp + ".tar.gz");
+            result.packagePath = path.join("/backup/dist/", "tbtx_" + stamp + ".tar.gz");
             ret();
         }, function() {
             code = 251;
