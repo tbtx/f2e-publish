@@ -3,13 +3,17 @@ f2e-publish
 
 tbtx f2e publish service
 
+## 准备
+
+在服务器上创建一个SVN仓库以及一个SVN项目库
+
 ## 安装
 
     npm install
 
-    仿照settings.example.js创建配置settings.js里的svn地址，用户名和密码
+    仿照settings.example.js创建配置settings.js里的svn项目地址，用户名和密码来执行svn 更新
 
-    拷贝到svn项目的hooks/post-commit，修改hooks/svn.hooks里的handler路径
+    拷贝hooks/svn.hooks到svn仓库的hooks/post-commit并给其执行权限，修改里面的HANDLER路径为hooks/svnHandler.js里绝对路径
 
 ## 运行
 
