@@ -207,8 +207,8 @@ router.post('/commit', function(req, res) {
         ret();
     } else {
         q.all([
-            tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath)),
-            tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath))
+            tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath),
+            tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath)
         ]).then(function() {
             // 备份json
             fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
