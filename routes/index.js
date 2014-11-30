@@ -57,6 +57,7 @@ router.get('/', function(req, res) {
         i;
 
     // 没有后缀名的过滤，如目录，一些特殊文件
+    // svn根据最后一个字符是不是/就可以判断目录
     for (i in updates) {
         if (path.extname(i)) {
             ret.push(i);
