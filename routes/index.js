@@ -53,8 +53,18 @@ router.get('/', function(req, res) {
         updates = fse.readJSONSync(normalizePath('../update.json'));
     } catch (e) {}
 
+    var ret = [],
+        i;
+
+    // 没有后缀名的过滤，如目录，一些特殊文件
+    for (i in updates) {
+        if (path.extname(i)) {
+            ret.push(i);
+        }
+    }
+
     res.render('index', {
-        updates: updates
+        updates: ret
     });
 
 });

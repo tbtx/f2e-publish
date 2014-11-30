@@ -16,10 +16,10 @@
                     <th>文件名</th>
                     <th><a href="javascript:void(0);" id="js-compress-all" class="btn">压缩</a></th>
                 </tr>
-                {% for key, item in updates %}
-                <tr class="js-publish-item" data-name="{{ key }}">
+                {% for item in updates|sort %}
+                <tr class="js-publish-item" data-name="{{ item }}">
                     <td data-role="select"><input type="checkbox" data-role="select-checkbox" data-t="select"></td>
-                    <td>{{ key }}</td>
+                    <td>{{ item }}</td>
                     <td data-role="compress"><input type="checkbox" data-role="compress-checkbox" data-t="compress"></td>
                 </tr>
                 {% endfor %}
