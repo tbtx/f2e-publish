@@ -21,7 +21,11 @@ try {
 var backupDirs = {
     json: normalizePath('../backup/json'),
     src: normalizePath('../backup/src'),
-    dist: normalizePath('../backup/dist')
+    dist: normalizePath('../backup/dist'),
+    min: normalizePath('../backup/min'),
+
+    // 项目包备份
+    project: normalizePath('../backup/project')
 }
 
 // temp dir
@@ -36,6 +40,8 @@ fse.ensureDirSync(backupDirs.src);
 // 发布包备份
 fse.ensureDirSync(backupDirs.dist);
 
+// 压缩后的代码
+fse.ensureDirSync(backupDirs.min);
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -129,6 +135,7 @@ router.post('/commit', function(req, res) {
                     }).minify(srcContent);
 
                     fse.outputFileSync(path.join(distPath, name), header + distContent);
+                    fse.outputFileSync(path.join(backupDirs.min, name), header + distContent);
                 } catch(e) {
 
                     code = 221;
@@ -158,6 +165,7 @@ router.post('/commit', function(req, res) {
                     }).code;
 
                     fse.outputFileSync(path.join(distPath, name), header + distContent);
+                    fse.outputFileSync(path.join(backupDirs.min, name), header + distContent);
                 } catch (e) {
                     code = 226;
                     msg = "compress js file error";
@@ -199,8 +207,8 @@ router.post('/commit', function(req, res) {
         ret();
     } else {
         q.all([
-            tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath),
-            tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath)
+            tar(path.join(backupDirs.src, "tbtx_" + stamp), srcPath)),
+            tar(path.join(backupDirs.dist, "tbtx_" + stamp), distPath))
         ]).then(function() {
             // 备份json
             fse.copySync(jsonPath, path.join(backupDirs.json, "update_" + stamp + ".json"));
@@ -219,14 +227,33 @@ router.post('/commit', function(req, res) {
 
 });
 
+router.get('/pack/project', function(req, res) {
+
+    fse.ensureDirSync(backupDirs.project);
+
+    var stamp = moment().format("YYYYMMDDHHmmss");
+
+    tar(path.join(backupDirs.project, "tbtx_" + stamp), settings.project)
+    .then(function() {
+        res.redirect("/backup/project/" + "tbtx_" + stamp + ".tar.gz");
+    }).fail(function(err) {
+        next(err);
+    });
+
+});
+
 
 function tar(name, dir) {
     var deferred = q.defer();
-    var cmd = util.format("tar -zcvf %s.tar.gz %s", name, 'tbtx');
+
+    var basename = path.basename(dir),
+        dirname = path.dirname(dir);
+
+    var cmd = util.format("tar -zcvf %s.tar.gz %s", name, basename);
 
     // dir /xx/xx/f2e-publish/tmp/src20141129030256/tbtx
     exec(cmd, {
-        cwd: path.join(dir, "..")
+        cwd: dirname
     }, function(err, data) {
         if (err) {
             deferred.reject(err);
