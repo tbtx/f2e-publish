@@ -150,6 +150,10 @@ router.post('/commit', function(req, res) {
                 try {
                     distContent = uglify.minify(filePath, {
                         mangle: true,
+                        output: {
+                            // 汉字编码为Unicode
+                            ascii_only: true
+                        },
                         compress: {
                             booleans: true,         // 多种针对布尔上下文的优化
                             conditionals: true,     // 为if -s 和条件表达式应用优化
