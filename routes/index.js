@@ -247,9 +247,9 @@ router.get('/pack/project', function(req, res) {
 
     var stamp = moment().format("YYYYMMDDHHmmss");
 
-    tar(path.join(backupDirs.project, "tbtx_" + stamp), settings.project)
+    tar(path.join(backupDirs.project, "tbtx_project" + stamp), settings.project)
     .then(function() {
-        res.redirect("/backup/project/" + "tbtx_" + stamp + ".tar.gz");
+        res.redirect("/backup/project/" + "tbtx_project" + stamp + ".tar.gz");
     }).fail(function(err) {
         next(err);
     });

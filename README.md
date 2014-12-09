@@ -13,7 +13,8 @@ tbtx f2e publish service
 
     仿照settings.example.js创建配置settings.js里的svn项目地址，用户名和密码来执行svn 更新
 
-    拷贝hooks/svn.hooks到svn仓库的hooks/post-commit并给其执行权限，修改里面的HANDLER路径为hooks/svnHandler.js里绝对路径
+    拷贝hooks/svn.hooks到svn仓库的hooks/post-commit并给其执行权限，修改里面的HANDLER路径为hooks/svnHandler.js里绝对路径，
+    node的bin目录可能在/user/local/bin里，根据自己的环境修改
 
 ## 运行
 
