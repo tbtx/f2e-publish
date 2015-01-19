@@ -12,7 +12,7 @@ body {
 
 #page {
     padding-bottom: 63px;
-    height: 100%;
+    min-height: 100%;
 }
 
 #footer {
