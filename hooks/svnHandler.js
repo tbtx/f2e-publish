@@ -74,7 +74,7 @@ function updateJSON(data) {
                 delete json[key];
             } else {
                 // json[key] = 1;
-                if (/\.(css|js)$/.test(key)) {
+                if (!/\/src\//.test(key)) {
                     json[key] = 1;
                 }
             }
