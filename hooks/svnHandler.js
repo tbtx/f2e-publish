@@ -66,7 +66,7 @@ function updateJSON(data) {
     lines.forEach(function(line) {
         line = line.trim();
 
-        if (line) {
+        if (line && line.charAt(line.length - 1) != '/') {
             var mark = line.charAt(0).toLowerCase();
             var key = line.slice(1).trim();
 
