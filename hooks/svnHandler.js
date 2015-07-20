@@ -18,6 +18,11 @@ try {
     json = require(jsonPath);
 } catch(e) {}
 
+var ignoreList = [
+    'gulpfile.js',
+    'webpack.config.js',
+    'package.json'
+];
 
 /**
  * 更新svn
@@ -74,7 +79,7 @@ function updateJSON(data) {
                 delete json[key];
             } else {
                 // json[key] = 1;
-                if (!/\/src\//.test(key)) {
+                if (!/\/src\//.test(key) && ignoreList.indexOf(key) === -1) {
                     json[key] = 1;
                 }
             }
