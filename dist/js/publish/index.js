@@ -54,7 +54,8 @@ require(["jquery", "widget"], function($, Widget) {
     var widgets = [];
     $(".js-publish-item").each(function() {
         var widget = new ItemWidget({
-            element: this
+            element: this,
+            compressed: !/\/dist\//.test($(this).data("name"))
         }).render();
 
         widgets.push(widget);
